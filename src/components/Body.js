@@ -27,9 +27,9 @@ const Body = () => {
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-              const {uid, email, displayName} = user;
+              const {uid, email, displayName, photoURL} = user;
               //update redux store
-              dispatch(addUser({uid: uid, email: email, displayName}));
+              dispatch(addUser({uid: uid, email: email, displayName, photoURL: photoURL}));
               
             } else {
               // User is signed out
