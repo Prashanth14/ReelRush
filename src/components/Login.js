@@ -1,11 +1,29 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Header from './Header';
+import { checkValidData } from '../utils/validate';
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  
+  const fullName = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleButtonClick = () => {
+    const message = isSignInForm ?
+    checkValidData(email.current.value, password.current.value)
+    : checkValidData(email.current.value, password.current.value, fullName.current.value);
+    
+    setErrorMessage(message);
+
+    //If data is valid then we can proceed to Sign In
+
+  };
 
   const toggleSignInForm= () => {
     setIsSignInForm(!isSignInForm);
+    setErrorMessage(null);
   }
   return (
     <div>
@@ -14,16 +32,19 @@ const Login = () => {
         <img src="https://assets.nflxext.com/ffe/siteui/vlv3/df6621a3-890c-4ca0-b698-90bd5152f3d1/1abd43b5-b8a4-47ae-9e04-4ea437fef33e/US-en-20240107-trifectadaily-perspective_alpha_website_large.jpg" alt='logo' />
       </div>
 
-      <form className='w-3/12 absolute p-12 bg-black my-36 mx-auto right-0 left-0 text-white rounded-lg bg-opacity-80'>
+      <form onSubmit={(e) => e.preventDefault()} className='w-3/12 absolute p-12 bg-black my-36 mx-auto right-0 left-0 text-white rounded-lg bg-opacity-80'>
+
         <h1 className='font-bold text-3xl py-4'>{isSignInForm? "Sign In": "Sign Up"}</h1>
 
-        {!isSignInForm && (<input type='text' placeholder='Full Name' className='p-4 my-4 w-full bg-gray-700'></input>)}
+        {!isSignInForm && (<input ref={fullName} type='text' placeholder='Full Name' className='p-4 my-4 w-full bg-gray-700'></input>)}
 
-        <input type='text' placeholder='Email Address' className='p-4 my-4 w-full bg-gray-700'></input>
+        <input ref={email} type='text' placeholder='Email Address' className='p-4 my-4 w-full bg-gray-700'></input>
 
-        <input type='password' placeholder='Password' className='p-4 my-4 w-full bg-gray-700'></input>
+        <input ref={password} type='password' placeholder='Password' className='p-4 my-4 w-full bg-gray-700'></input>
 
-        <button className='p-4 my-6 bg-red-700 w-full rounded-lg'>{isSignInForm? "Sign In": "Sign Up"}
+        <p className='text-red-500 font-bold text-lg py-2'>{errorMessage}</p>
+
+        <button className='p-4 my-6 bg-red-700 w-full rounded-lg' onClick={handleButtonClick}>{isSignInForm? "Sign In": "Sign Up"}
         </button>
 
         <p className='py-4 cursor-pointer' onClick={toggleSignInForm}>{isSignInForm? "New to ReelRush? Sign Up Now": "Already registered? Sign In Now"}</p>
